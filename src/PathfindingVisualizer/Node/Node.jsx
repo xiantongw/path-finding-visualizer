@@ -10,9 +10,11 @@ export default class Node extends Component {
       isFinish,
       isStart,
       isWall,
+      isVisited,
       onMouseDown,
       onMouseUp,
       onMouseEnter,
+      previousNode,
     } = this.props;
     const extraClassName = isFinish
       ? "node-finish"

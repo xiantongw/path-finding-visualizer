@@ -16,3 +16,7 @@
 .node-wall {
   background-color: black;
 }
+
+.node-visited {
+  background-color: turquoise;
+}
