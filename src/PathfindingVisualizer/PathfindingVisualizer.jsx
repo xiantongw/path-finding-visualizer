@@ -1,6 +1,8 @@
 import { Component } from "react";
 import Node from "./Node/Node";
-import { dijkstra, getNodesInShortestPath } from "../Algorithms/dijkstra";
+import { dijkstra } from "../Algorithms/dijkstra";
+import { bfs } from "../Algorithms/bfs";
+import { getNodesInShortestPath } from "../Algorithms/utils";
 
 import "./PathfindingVisualizer.css";
 
@@ -47,16 +49,41 @@ export default class PathfindingVisualizer extends Component {
     const finishNode = grid[FINISH_ROW][FINISH_COL];
     const visitedNodesInOrder = dijkstra(grid, startNode, finishNode);
     const nodesInShortestPathOrder = getNodesInShortestPath(finishNode);
-    this.animateDijkstra(visitedNodesInOrder);
+    this.animateSearching(visitedNodesInOrder, nodesInShortestPathOrder);
   }
 
-  animateDijkstra(visitedNodesInOrder) {
+  visualizeBfs() {
+    const { grid } = this.state;
+    const startNode = grid[START_ROW][START_COL];
+    const finishNode = grid[FINISH_ROW][FINISH_COL];
+    const visitedNodesInOrder = bfs(grid, startNode, finishNode);
+    const nodesInShortestPathOrder = getNodesInShortestPath(finishNode);
+    this.animateSearching(visitedNodesInOrder, nodesInShortestPathOrder);
+  }
+
+  animateSearching(visitedNodesInOrder, nodesInShortestPathOrder = []) {
     for (let i = 0; i < visitedNodesInOrder.length; i++) {
+      if (i === visitedNodesInOrder.length - 1) {
+        setTimeout(() => {
+          this.animateShortestPath(nodesInShortestPathOrder);
+        }, 5 * i);
+        return;
+      }
       setTimeout(() => {
         const node = visitedNodesInOrder[i];
         document.getElementById(`node-${node.row}-${node.col}`).className =
           "node node-visited";
-      }, 10 * i);
+      }, 5 * i);
+    }
+  }
+
+  animateShortestPath(nodesInShortestPathOrder) {
+    for (let i = 0; i < nodesInShortestPathOrder.length; i++) {
+      setTimeout(() => {
+        const node = nodesInShortestPathOrder[i];
+        document.getElementById(`node-${node.row}-${node.col}`).className =
+          "node node-final-path";
+      }, 50 * i);
     }
   }
 
@@ -65,8 +92,11 @@ export default class PathfindingVisualizer extends Component {
 
     return (
       <>
-        <button onClick={() => this.visualizeDijkstra()}>
+        <button className="btn" onClick={() => this.visualizeDijkstra()}>
           Visualize Dijkstra
+        </button>
+        <button className="btn" onClick={() => this.visualizeBfs()}>
+          Visualize BFS
         </button>
         <div className="grid">
           {grid.map((row, rowIdx) => {

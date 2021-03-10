@@ -20,3 +20,7 @@
 .node-visited {
   background-color: turquoise;
 }
+
+.node-final-path {
+  background-color: yellow;
+}
